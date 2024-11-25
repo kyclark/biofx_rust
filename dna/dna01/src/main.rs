@@ -1,26 +1,16 @@
-extern crate clap;
+use clap::Parser;
 
-use clap::{App, Arg};
-
-fn get_args() -> String {
-    let matches = App::new("dna")
-        .version("0.1.0")
-        .author("Ken Youens-Clark <kyclark@gmail.com>")
-        .about("Tetranucleotide frequency")
-        .arg(
-            Arg::with_name("dna")
-                .value_name("DNA")
-                .help("Input DNA")
-                .required(true)
-                .min_values(1),
-        )
-        .get_matches();
-
-    matches.value_of("dna").unwrap().to_string()
+#[derive(Debug, Parser)]
+#[command(version, about)]
+/// Count nucleotides
+struct Args {
+    /// DNA
+    dna: String,
 }
 
 fn main() {
-    let dna = get_args();
+    let args = Args::parse();
+    let dna = args.dna;
     let (mut count_a, mut count_c, mut count_g, mut count_t) = (0, 0, 0, 0);
 
     for base in dna.to_uppercase().chars() {

@@ -1,7 +1,13 @@
-extern crate clap;
-
-use clap::{App, Arg};
+use clap::Parser;
 use std::collections::HashMap;
+
+#[derive(Debug, Parser)]
+#[command(version, about)]
+/// Count nucleotides
+struct Args {
+    /// DNA
+    dna: String,
+}
 
 #[derive(Debug, PartialEq)]
 struct BaseCount {
@@ -11,35 +17,22 @@ struct BaseCount {
     g: u32,
 }
 
-fn get_args() -> String {
-    let matches = App::new("dna")
-        .version("0.1.0")
-        .author("Ken Youens-Clark <kyclark@gmail.com>")
-        .about("Tetranucleotide frequency")
-        .arg(
-            Arg::with_name("dna")
-                .value_name("DNA")
-                .help("Input DNA")
-                .required(true)
-                .min_values(1),
-        )
-        .get_matches();
-
-    matches.value_of("dna").unwrap().to_string()
-}
-
 fn main() {
-    let dna = get_args();
-    let counts = count(&dna);
+    let args = Args::parse();
+    let counts = count(&args.dna);
     println!("{} {} {} {}", counts.a, counts.c, counts.g, counts.t);
 }
 
 /// Count the bases of DNA
-fn count(dna: &String) -> BaseCount {
+fn count(dna: &str) -> BaseCount {
     let mut count: HashMap<char, u32> = HashMap::new();
+    //for base in dna.to_uppercase().chars() {
+    //    let num = count.entry(base).or_insert(0);
+    //    *num += 1;
+    //}
+
     for base in dna.to_uppercase().chars() {
-        let num = count.entry(base).or_insert(0);
-        *num += 1;
+        count.entry(base).and_modify(|num| *num += 1).or_insert(0);
     }
 
     BaseCount {
@@ -53,7 +46,7 @@ fn count(dna: &String) -> BaseCount {
 #[test]
 fn test_count() {
     assert_eq!(
-        count(&"".to_string()),
+        count(""),
         BaseCount {
             a: 0,
             c: 0,
@@ -63,7 +56,7 @@ fn test_count() {
     );
 
     assert_eq!(
-        count(&"ACCGGGTTTT".to_string()),
+        count("ACCGGGTTTT"),
         BaseCount {
             a: 1,
             c: 2,

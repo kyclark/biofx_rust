@@ -1,16 +1,8 @@
-extern crate dna;
-use std::process;
+use crate::{run, Args};
+use clap::Parser;
 
 fn main() {
-    let config = match dna::get_args() {
-        Ok(c) => c,
-        Err(e) => {
-            println!("{}", e);
-            process::exit(1);
-        }
-    };
-
-    if let Err(e) = dna::run(config) {
+    if let Err(e) = run(Args::parse()) {
         println!("Error: {}", e);
         process::exit(1);
     }

@@ -1,8 +1,8 @@
 [package]
-name = "dna"
+name = "dna06"
 version = "0.1.0"
-authors = ["Ken Youens-Clark <kyclark@gmail.com>"]
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0.93"
 clap = { version = "4.5.21", features = ["derive"] }
